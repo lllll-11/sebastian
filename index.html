@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Física</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <h1>sebastian de jesus 4 M</h1>
+    <p>vectores a ingresar</p>
+    <input type="number" id="numVectors"><br><br>
+    <button onclick="generateInputs()">Aceptar</button><br><br>
+    <div id="vectorInputs"></div>
+    <button onclick="resolveVectors()">Resolver Vectores</button><br><br>
+    <canvas id="canvas"></canvas>
+
+    <script>
+        function generateInputs() {
+            var numVectors = parseInt(document.getElementById('numVectors').value);
+            var inputsDiv = document.getElementById('vectorInputs');
+            inputsDiv.innerHTML = '';
+
+            for (var i = 1; i <= numVectors; i++) {
+                var label = document.createElement('label');
+                label.textContent = "Magnitud del vector " + i + ": ";
+                var inputMagnitude = document.createElement('input');
+                inputMagnitude.type = 'number';
+                inputMagnitude.id = 'magnitude' + i;
+                inputsDiv.appendChild(label);
+                inputsDiv.appendChild(inputMagnitude);
+
+                var angleLabel = document.createElement('label');
+                angleLabel.textContent = "Ángulo del vector " + i + " (en grados): ";
+                var inputAngle = document.createElement('input');
+                inputAngle.type = 'number';
+                inputAngle.id = 'angle' + i;
+                inputsDiv.appendChild(angleLabel);
+                inputsDiv.appendChild(inputAngle);
+
+                inputsDiv.appendChild(document.createElement('br'));
+            }
+        }
+
+
+
+        function resolveVectors() {
+            var numVectors = parseInt(document.getElementById('numVectors').value);
+            var totalX = 0;
+            var totalY = 0;
+
+            var canvas = document.getElementById('canvas');
+            var ctx = canvas.getContext('2d');
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            for (var i = 1; i <= numVectors; i++) {
+                var magnitude = parseFloat(document.getElementById('magnitude' + i).value);
+                var angle = parseFloat(document.getElementById('angle' + i).value);
+
+                var vectorX = magnitude * Math.cos(angle * Math.PI / 180);
+                var vectorY = magnitude * Math.sin(angle * Math.PI / 180);
+
+                totalX += vectorX;
+                totalY += vectorY;
+
+                ctx.beginPath();
+                ctx.moveTo(canvas.width / 2, canvas.height / 2);
+                ctx.lineTo(canvas.width / 2 + vectorX, canvas.height / 2 - vectorY);
+                ctx.strokeStyle = 'red';
+                ctx.stroke();
+            }
+
+            var resultantMagnitude = Math.sqrt(totalX * totalX + totalY * totalY);
+            var resultantAngle = Math.atan2(totalY, totalX) * 180 / Math.PI;
+
+            // Ajuste del ángulo para que esté entre 0° y 360°
+            resultantAngle = (resultantAngle + 360) % 360;
+
+            ctx.beginPath();
+            ctx.moveTo(canvas.width / 2, canvas.height / 2);
+            ctx.lineTo(canvas.width / 2 + totalX, canvas.height / 2 - totalY);
+            ctx.strokeStyle = 'green';
+            ctx.stroke();
+
+            alert("La fuerza resultante es: " + resultantMagnitude.toFixed(2) + " y el ángulo es: " + resultantAngle.toFixed(2) + "°");
+        }
+    </script>
+</body>
+</html>
